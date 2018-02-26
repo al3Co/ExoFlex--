@@ -20,18 +20,17 @@ ArmAngle = csvread(ficherocsv,7,2,[7,2,Frames,5]);
 
 Reference = csvread(ficherocsv,7,19,[7,19,Frames,21]);
 
-Verticality = csvread(ficherocsv,7,22,[7,22,Frames,30]);
-
-
+%Verticality = csvread(ficherocsv,7,22,[7,22,Frames,30]);
+Verticality = 0 ;
 %Mostrar posiciones respecto al tiempo
-plot(Time,ArmAngle(:,1),'Color','b')
-hold on
-plot(Time,ArmAngle(:,2),'Color','g')
-plot(Time,ArmAngle(:,3),'Color','r')
-title('Posición Hombro')
-xlim([0 Time(size(Time,1),1)]);
-xlabel('Tiempo');
-ylabel('XYZ');
-set(gca,'XGrid','on','YGrid','on');
+% plot(Time,ArmAngle(:,1),'Color','b')
+% hold on
+% plot(Time,ArmAngle(:,2),'Color','g')
+% plot(Time,ArmAngle(:,3),'Color','r')
+% title('Posición Hombro')
+% xlim([0 Time(size(Time,1),1)]);
+% xlabel('Tiempo');
+% ylabel('XYZ');
+% set(gca,'XGrid','on','YGrid','on');
 
 end
