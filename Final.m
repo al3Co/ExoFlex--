@@ -4,5 +4,6 @@ prompt = ('Enter optitrack data file name: ');
 ficherocsv = input(prompt,'s');
 
 [ArmPos,ArmAngle,Reference,Verticality,RealTime] = OptiCoord(ficherocsv);
-%[ArmPosT,ArmAngle,ReferenceT,VerticalityT] = CoordTrans(ArmPos,ArmAngle,Reference,Verticality);
-[qx,qy,qz,qw] = QuaternTimeCheck(SensorFile,ArmAngle,RealTime);
+[X,Y,Z,XV,YV,ZV] = QuaternTimeCheck(SensorFile,ArmAngle,Verticality,RealTime);
+BrazoGF = [X,Y,Z];
+EspaldaGF = [XV,YV,ZV];

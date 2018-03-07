@@ -16,12 +16,12 @@ end
 
 ArmPos = csvread(ficherocsv,7,6,[7,6,Frames,8]); 
 
-ArmAngle = csvread(ficherocsv,7,2,[7,2,Frames,5]);
+ArmAngle = csvread(ficherocsv,7,2,[7,2,Frames,4]);
 
-Reference = csvread(ficherocsv,7,19,[7,19,Frames,21]);
+Reference = csvread(ficherocsv,7,34,[7,34,Frames,36]);
 
-%Verticality = csvread(ficherocsv,7,22,[7,22,Frames,30]);
-Verticality = 0 ;
+Verticality = csvread(ficherocsv,7,9,[7,9,Frames,11]);
+
 %Mostrar posiciones respecto al tiempo
 % plot(Time,ArmAngle(:,1),'Color','b')
 % hold on
