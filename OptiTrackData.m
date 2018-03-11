@@ -5,7 +5,7 @@ clc
 %% 
 % get data as table
 % T = readtable('C:\Users\Aldo Contreras\Documents\ExoFlex\Jaime_TFM\OptiTrack\GREEN-FRONT2.csv');
-ficherocsv = '/Users/aldo/Documents/UPM/Exo/OptiTrack/27/GREEN-SIDE2.csv';
+ficherocsv = 'BLUE.csv';
 T = readtable(ficherocsv);
 
 % data = str2double([T.RigidBody(5:end) T.RigidBody_1(5:end) T.RigidBody_2(5:end) T.RigidBody_7(5:end) T.RigidBody_8(5:end) T.RigidBody_9(5:end)]);
