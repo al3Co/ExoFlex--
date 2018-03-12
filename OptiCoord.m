@@ -23,8 +23,8 @@ end
 % Reference = csvread(ficherocsv,7,34,[7,34,Frames,36]);
 % Verticality = csvread(ficherocsv,7,9,[7,9,Frames,11]);
 
+%% complete void spaces on Optitrack data
 T = readtable(ficherocsv);
-
 % data = str2double([T.RigidBody(5:end) T.RigidBody_1(5:end) T.RigidBody_2(5:end) T.RigidBody_7(5:end) T.RigidBody_8(5:end) T.RigidBody_9(5:end)]);
 data = str2double([T.Var1(5:end) T.Var2(5:end) T.RigidBody_3(5:end) T.RigidBody_4(5:end) T.RigidBody_5(5:end) T.RigidBody_10(5:end) T.RigidBody_11(5:end) T.RigidBody_12(5:end) T.Marker_18(5:end) T.Marker_19(5:end) T.Marker_20(5:end)]);
 [m,n] = size(data);
@@ -52,14 +52,6 @@ EspaldaZ = data(:,8);
 refX = data(:,9);
 refY = data(:,10);
 refZ = data(:,11);
-
-hour = 1;
-Start(1:m) = hour;
-Start = Start';
-
 table_Pos = table(Sample, Time, BrazoX, BrazoY, BrazoZ, EspaldaX, EspaldaY, EspaldaZ, refX, refY, refZ, RealTime);
-
-
-
 
 end

@@ -1,7 +1,8 @@
 function [X,Y,Z,XV,YV,ZV] = QuaternTimeCheck(table_Pos, SensorFile)
-
+%% get time from sensors file
 SensorTime = STCorrection(SensorFile);
 % disp(table_Pos.RealTime)
+%% initialize variables
 X = zeros(size(SensorTime,1),1);
 Y = zeros(size(SensorTime,1),1);
 Z = zeros(size(SensorTime,1),1);
@@ -10,7 +11,7 @@ YV = zeros(size(SensorTime,1),1);
 ZV = zeros(size(SensorTime,1),1);
 h = 1;
 
-% this method verify where to start with same times (Opti and Sensors)
+%% verify where to start with same times (Opti and Sensors)
 for ii=1:size(SensorTime,1)
      if SensorTime(ii,1) >= table_Pos.RealTime(1,1)
         h = ii + 4;
