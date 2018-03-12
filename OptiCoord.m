@@ -1,8 +1,7 @@
 %Jaime Lorenzo
 %Optitrack data reading
 function [table_Pos] = OptiCoord(ficherocsv)
-
-%Import text of data
+%% import text of data
 ficheroxlsx = [ficherocsv, '.xlsx'];
 [num,txt,~] = xlsread(ficheroxlsx);
 [TR] = RealTimeOpti(txt);
@@ -18,7 +17,7 @@ for i=1:size(RealTime,1)
     RealTime(i,1) = seconds(TR) + RealTime(i,1);
 end
 
-%% complete void spaces on Optitrack data
+%% complete void spaces Optitrack data
 T = readtable(ficherocsv);
 % data = str2double([T.RigidBody(5:end) T.RigidBody_1(5:end) T.RigidBody_2(5:end) T.RigidBody_7(5:end) T.RigidBody_8(5:end) T.RigidBody_9(5:end)]);
 data = str2double([T.Var1(5:end) T.Var2(5:end) T.RigidBody_3(5:end) T.RigidBody_4(5:end) T.RigidBody_5(5:end) T.RigidBody_10(5:end) T.RigidBody_11(5:end) T.RigidBody_12(5:end) T.Marker_18(5:end) T.Marker_19(5:end) T.Marker_20(5:end)]);
@@ -35,7 +34,7 @@ for col=1:n
     pastData = 0;
 end
 
-% create table
+%% create table
 Sample = data(:,1);
 Time = data(:,2);
 BrazoX = data(:,3);

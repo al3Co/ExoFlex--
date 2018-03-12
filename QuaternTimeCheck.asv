@@ -1,103 +1,74 @@
-function [X,Y,Z,XV,YV,ZV] = QuaternTimeCheck(table_Pos, SensorFile)
+function [sensorDataTable, tableMatched] = QuaternTimeCheck(tableOpti, SensorFile)
 %% get time from sensors file
-SensorTime = STCorrection(SensorFile);
-% disp(table_Pos.RealTime)
-%% initialize variables
-Sample = zeros(size(SensorTime,1),1);
-Time = zeros(size(SensorTime,1),1);
-BrazoX = zeros(size(SensorTime,1),1);
-BrazoY = zeros(size(SensorTime,1),1);
-BrazoZ = zeros(size(SensorTime,1),1);
-EspaldaX = zeros(size(SensorTime,1),1);
-EspaldaY = zeros(size(SensorTime,1),1);
-EspaldaZ = zeros(size(SensorTime,1),1);
-refX = zeros(size(SensorTime,1),1);
-refY = zeros(size(SensorTime,1),1);
-refZ = zeros(size(SensorTime,1),1);
-realTime = zeros(size(SensorTime,1),1);
+sensorDataTable = readtable(SensorFile);
+sensorsTime = seconds(hours(sensorDataTable.Hour) + minutes(sensorDataTable.Minute) + seconds(sensorDataTable.Sec));
 
-vectorTime = zeros(size(SensorTime,1),1);
+%% initialize variables
+Sample = zeros(size(sensorsTime,1),1);
+Time = zeros(size(sensorsTime,1),1);
+BrazoX = zeros(size(sensorsTime,1),1);
+BrazoY = zeros(size(sensorsTime,1),1);
+BrazoZ = zeros(size(sensorsTime,1),1);
+EspaldaX = zeros(size(sensorsTime,1),1);
+EspaldaY = zeros(size(sensorsTime,1),1);
+EspaldaZ = zeros(size(sensorsTime,1),1);
+refX = zeros(size(sensorsTime,1),1);
+refY = zeros(size(sensorsTime,1),1);
+refZ = zeros(size(sensorsTime,1),1);
+realTime = zeros(size(sensorsTime,1),1);
+
+vectorTime = zeros(size(sensorsTime,1),1);
 firstTimeSample = 0;
 
 %% verify where to start with same times (Opti and Sensors)
-for increment=1:size(SensorTime)
-     if SensorTime(increment) >= table_Pos.RealTime(1)
-         fprintf('sensors: %d OptiTrack: %d.\n',SensorTime(increment),(table_Pos.RealTime(1)));
+for increment=1:size(sensorsTime)
+     if sensorsTime(increment) >= tableOpti.RealTime(1)
+         fprintf('sensors: %d OptiTrack: %d  synchronizing...\n',sensorsTime(increment),(tableOpti.RealTime(1)));
          firstTimeSample = increment;
          break
      end
 end
 
 % time between tests
-tBtSensors = SensorTime(2)- SensorTime(1);
-tBtOptiTrack = table_Pos.RealTime(2)-table_Pos.RealTime(1);
+tBtOptiTrack = tableOpti.RealTime(2) - tableOpti.RealTime(1);
 
-% travel vectors to match time
-for incrementST=1:(size(SensorTime)-firstTimeSample)
-    for incrementOpT=1:size(table_Pos.RealTime)
-        if (SensorTime(incrementST + firstTimeSample) + tBtOptiTrack) > table_Pos.RealTime(incrementOpT)
+%% travel vectors to match time
+% for each data sensor review if OptiTrack data match with (sensors time +
+% time between tests of OptiTrack samples)
+for incrementST=1:(size(sensorsTime)-firstTimeSample)
+    for incrementOpT=1:size(tableOpti.RealTime) % improve this method
+        if (sensorsTime(incrementST + firstTimeSample) + tBtOptiTrack) > tableOpti.RealTime(incrementOpT)
             vectorTime(incrementST + firstTimeSample) = incrementOpT;
-%             fprintf('Sensors: %f Opti %f \n',SensorTime(incrementST + firstTimeSample),table_Pos.RealTime(incrementOpT));
-%             break
         end
     end
 end
 
-% create new table locating new data
+%% locating new data
 for increment = (firstTimeSample + 1):(size(vectorTime))
-    Sample(increment) = table_Pos.Sample(vectorTime(increment));
-    Time(increment) = table_Pos.Time(vectorTime(increment));
-    BrazoX(increment) = table_Pos.BrazoX(vectorTime(increment));
-    BrazoY(increment) = table_Pos.BrazoY(vectorTime(increment));
-    BrazoZ(increment) = table_Pos.BrazoZ(vectorTime(increment));
-    EspaldaX(increment) = table_Pos.EspaldaX(vectorTime(increment));
-    EspaldaY(increment) = table_Pos.EspaldaY(vectorTime(increment));
-    EspaldaZ(increment) = table_Pos.EspaldaZ(vectorTime(increment));
-    refX(increment) = table_Pos.refX(vectorTime(increment));
-    refY(increment) = table_Pos.refY(vectorTime(increment));
-    refZ(increment) = table_Pos.refZ(vectorTime(increment));
-    realTime(increment) = table_Pos.realTime(vectorTime(increment));
+    Sample(increment,1) = tableOpti.Sample(vectorTime(increment));
+    Time(increment,1) = tableOpti.Time(vectorTime(increment));
+    BrazoX(increment,1) = tableOpti.BrazoX(vectorTime(increment));
+    BrazoY(increment,1) = tableOpti.BrazoY(vectorTime(increment));
+    BrazoZ(increment,1) = tableOpti.BrazoZ(vectorTime(increment));
+    EspaldaX(increment,1) = tableOpti.EspaldaX(vectorTime(increment));
+    EspaldaY(increment,1) = tableOpti.EspaldaY(vectorTime(increment));
+    EspaldaZ(increment,1) = tableOpti.EspaldaZ(vectorTime(increment));
+    refX(increment,1) = tableOpti.refX(vectorTime(increment));
+    refY(increment,1) = tableOpti.refY(vectorTime(increment));
+    refZ(increment,1) = tableOpti.refZ(vectorTime(increment));
+    realTime(increment,1) = tableOpti.RealTime(vectorTime(increment));
 end
 
+%% angles
+brazoTmp = [(BrazoX - refX) (BrazoY - refY) (BrazoZ - refZ)];
+espaldaTmp = [(EspaldaX - refX) (EspaldaY - tableMatched.refY) (tableMatched.EspaldaZ - tableMatched.refZ)];
 
-%     
-% for i=h:size(SensorTime,1)
-%     for j=1:size(RealTime,1)
-%         if SensorTime(i,1) <= RealTime(j,1)
-%             t = j;
-%             tv = j;
-%             break
-%         end
-%     end
-%     v = t-1;
-%     vv = t-1;
-%     while ArmAngle(v,1) == 0
-%         v = v-1;
-%     end
-%     while ArmAngle(t,1) == 0
-%         t = t+1;
-%     end   
-%     while Verticality(vv,1) == 0
-%         vv = vv-1;
-%     end
-%     while Verticality(tv,1) == 0
-%         tv = tv+1;
-%     end   
-%     if SensorTime(i,1) == RealTime(t,1)
-%           X(i,1) = ArmAngle(t,1);
-%           Y(i,1) = ArmAngle(t,2);
-%           Z(i,1) = ArmAngle(t,3);
-%           XV(i,1) = Verticality(tv,1);
-%           YV(i,1) = Verticality(tv,2);
-%           ZV(i,1) = Verticality(tv,3);
-%     else
-%           X(i,1) = ArmAngle(v,1) + ((ArmAngle(t,1)-((ArmAngle(v,1)/(RealTime(t,1)-RealTime(v,1)))*(SensorTime(i,1)-(RealTime(v,1))))));
-%           Y(i,1) = ArmAngle(v,2) + ((ArmAngle(t,2)-((ArmAngle(v,2)/(RealTime(t,1)-RealTime(v,1)))*(SensorTime(i,1)-(RealTime(v,1))))));
-%           Z(i,1) = ArmAngle(v,3) + ((ArmAngle(t,3)-((ArmAngle(v,3)/(RealTime(t,1)-RealTime(v,1)))*(SensorTime(i,1)-(RealTime(v,1))))));
-%           XV(i,1) = Verticality(vv,1) + ((Verticality(tv,1)-((Verticality(vv,1)/(RealTime(tv,1)-RealTime(vv,1)))*(SensorTime(i,1)-(RealTime(vv,1))))));
-%           YV(i,1) = Verticality(vv,2) + ((Verticality(tv,2)-((Verticality(vv,2)/(RealTime(tv,1)-RealTime(vv,1)))*(SensorTime(i,1)-(RealTime(vv,1))))));
-%           ZV(i,1) = Verticality(vv,3) + ((Verticality(tv,3)-((Verticality(vv,3)/(RealTime(tv,1)-RealTime(vv,1)))*(SensorTime(i,1)-(RealTime(vv,1))))));
-%     end
-% end
+aBrazoX = atan2(sqrt(brazoTmp(:,2).^2+brazoTmp(:,3).^2),brazoTmp(:,1));
+aBrazoY = atan2(sqrt(brazoTmp(:,3).^2+brazoTmp(:,1).^2),brazoTmp(:,2));
+aBrazoZ = atan2(sqrt(brazoTmp(:,1).^2+brazoTmp(:,2).^2),brazoTmp(:,3));
+
+%% create table
+tableMatched = table(Sample, Time, realTime, BrazoX, BrazoY, BrazoZ, aBrazoX, aBrazoY, aBrazoZ,EspaldaX, EspaldaY, EspaldaZ, refX, refY, refZ);
+
 end
 
