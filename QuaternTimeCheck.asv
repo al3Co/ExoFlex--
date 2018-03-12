@@ -2,22 +2,64 @@ function [X,Y,Z,XV,YV,ZV] = QuaternTimeCheck(table_Pos, SensorFile)
 %% get time from sensors file
 SensorTime = STCorrection(SensorFile);
 % disp(table_Pos.RealTime)
-X = zeros(size(SensorTime,1),1);
-Y = zeros(size(SensorTime,1),1);
-Z = zeros(size(SensorTime,1),1);
-XV = zeros(size(SensorTime,1),1);
-YV = zeros(size(SensorTime,1),1);
-ZV = zeros(size(SensorTime,1),1);
-h = 1;
+%% initialize variables
+Sample = zeros(size(SensorTime,1),1);
+Time = zeros(size(SensorTime,1),1);
+BrazoX = zeros(size(SensorTime,1),1);
+BrazoY = zeros(size(SensorTime,1),1);
+BrazoZ = zeros(size(SensorTime,1),1);
+EspaldaX = zeros(size(SensorTime,1),1);
+EspaldaY = zeros(size(SensorTime,1),1);
+EspaldaZ = zeros(size(SensorTime,1),1);
+refX = zeros(size(SensorTime,1),1);
+refY = zeros(size(SensorTime,1),1);
+refZ = zeros(size(SensorTime,1),1);
+realTime = zeros(size(SensorTime,1),1);
 
-% this method verify where to start with same times (Opti and Sensors)
-for ii=1:size(SensorTime,1)
-     if SensorTime(ii,1) >= table_Pos.RealTime(1,1)
-        h = ii + 4;
-        break
+vectorTime = zeros(size(SensorTime,1),1);
+firstTimeSample = 0;
+
+%% verify where to start with same times (Opti and Sensors)
+for increment=1:size(SensorTime)
+     if SensorTime(increment) >= table_Pos.RealTime(1)
+         fprintf('sensors: %d OptiTrack: %d.\n',SensorTime(increment),(table_Pos.RealTime(1)));
+         firstTimeSample = increment;
+         break
      end
 end
-disp(h) % HERE I AM
+
+% time between tests
+tBtSensors = SensorTime(2)- SensorTime(1);
+tBtOptiTrack = table_Pos.RealTime(2)-table_Pos.RealTime(1);
+
+% travel vectors to match time
+for incrementST=1:(size(SensorTime)-firstTimeSample)
+    for incrementOpT=1:size(table_Pos.RealTime)
+        if (SensorTime(incrementST + firstTimeSample) + tBtOptiTrack) > table_Pos.RealTime(incrementOpT)
+            vectorTime(incrementST + firstTimeSample) = incrementOpT;
+%             fprintf('Sensors: %f Opti %f \n',SensorTime(incrementST + firstTimeSample),table_Pos.RealTime(incrementOpT));
+%             break
+        end
+    end
+end
+
+% create new table locating new data
+for increment = (firstTimeSample + 1):(size(vectorTime))
+    Sample(increment) = table_Pos.Sample(vectorTime(increment));
+    Time(increment) = table_Pos.Time(vectorTime(increment));
+    BrazoX(increment) = table_Pos.BrazoX(vectorTime(increment));
+    BrazoY(increment) = table_Pos.BrazoY(vectorTime(increment));
+    BrazoZ(increment) = table_Pos.BrazoZ(vectorTime(increment));
+    EspaldaX(increment) = table_Pos.EspaldaX(vectorTime(increment));
+    EspaldaY(increment) = table_Pos.EspaldaY(vectorTime(increment));
+    EspaldaZ(increment) = table_Pos.EspaldaZ(vectorTime(increment));
+    refX(increment) = table_Pos.refX(vectorTime(increment));
+    refY(increment) = table_Pos.refY(vectorTime(increment));
+    refZ(increment) = table_Pos.refZ(vectorTime(increment));
+    realTime(increment) = table_Pos.realTime(vectorTime(increment));
+end
+
+
 %     
 % for i=h:size(SensorTime,1)
 %     for j=1:size(RealTime,1)

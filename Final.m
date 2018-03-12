@@ -1,9 +1,13 @@
+clear
+close all
+clc
+
 prompt = ('Enter sensor data file name: ');
 sensorFile = input(prompt,'s');
 prompt = ('Enter optitrack data file name: ');
 ficheroCSV = input(prompt,'s');
 
-[table_Pos] = OptiCoord(ficheroCSV);
-[X,Y,Z,XV,YV,ZV] = QuaternTimeCheck(table_Pos, sensorFile);
-% BrazoGF = [X,Y,Z];
-% EspaldaGF = [XV,YV,ZV];
+% function to extract OptiTrack data and filling void spaces
+[table_Pos] = OptiCoord(ficheroCSV); % improve this function (file's name)
+% function to get sensors table and Match time with OptiTrack Data
+[sensorDataTable, tableMatched] = QuaternTimeCheck(table_Pos, sensorFile);

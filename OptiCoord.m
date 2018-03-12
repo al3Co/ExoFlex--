@@ -18,11 +18,6 @@ for i=1:size(RealTime,1)
     RealTime(i,1) = seconds(TR) + RealTime(i,1);
 end
 
-% ArmPos = csvread(ficherocsv,7,6,[7,6,Frames,8]); 
-% ArmAngle = csvread(ficherocsv,7,2,[7,2,Frames,4]);
-% Reference = csvread(ficherocsv,7,34,[7,34,Frames,36]);
-% Verticality = csvread(ficherocsv,7,9,[7,9,Frames,11]);
-
 %% complete void spaces on Optitrack data
 T = readtable(ficherocsv);
 % data = str2double([T.RigidBody(5:end) T.RigidBody_1(5:end) T.RigidBody_2(5:end) T.RigidBody_7(5:end) T.RigidBody_8(5:end) T.RigidBody_9(5:end)]);
