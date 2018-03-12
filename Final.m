@@ -1,9 +1,9 @@
 prompt = ('Enter sensor data file name: ');
-SensorFile = input(prompt,'s');
+sensorFile = input(prompt,'s');
 prompt = ('Enter optitrack data file name: ');
-ficherocsv = input(prompt,'s');
+ficheroCSV = input(prompt,'s');
 
-[ArmPos,ArmAngle,Reference,Verticality,RealTime] = OptiCoord(ficherocsv);
-% [X,Y,Z,XV,YV,ZV] = QuaternTimeCheck(SensorFile,ArmAngle,Verticality,RealTime);
+[table_Pos] = OptiCoord(ficheroCSV);
+[X,Y,Z,XV,YV,ZV] = QuaternTimeCheck(table_Pos, sensorFile);
 % BrazoGF = [X,Y,Z];
 % EspaldaGF = [XV,YV,ZV];
