@@ -68,7 +68,12 @@ aBrazoY = atan2(sqrt(brazoTmp(:,3).^2+brazoTmp(:,1).^2),brazoTmp(:,2));
 aBrazoZ = atan2(sqrt(brazoTmp(:,1).^2+brazoTmp(:,2).^2),brazoTmp(:,3));
 
 %% create table
-tableMatched = table(Sample, Time, realTime, BrazoX, BrazoY, BrazoZ, aBrazoX, aBrazoY, aBrazoZ,EspaldaX, EspaldaY, EspaldaZ, refX, refY, refZ);
+tableMatched = table(Sample, Time, realTime, BrazoX, BrazoY, BrazoZ, ... 
+    aBrazoX, aBrazoY, aBrazoZ,EspaldaX, EspaldaY, EspaldaZ, refX, refY, refZ);
+
+% % extract data
+% v = [16 5 9 4 2 11 7 14];
+% v = v(3:7)     % Extract the third through the seventh elements
 
 end
 
