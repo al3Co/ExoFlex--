@@ -39,7 +39,7 @@ tBtOptiTrack = tableOpti.RealTime(2) - tableOpti.RealTime(1);       % time betwe
 [m,n] = size(sensorsTime);
 h = waitbar(0,'Synchronizing data...');
 for incrementST=0:(m-firstTimeSample)           % for each sensors data starting with THE match
-    for incrementOpT=1:size(tableOpti.RealTime) % review if time matchs
+    for incrementOpT=1:size(tableOpti.RealTime) % review if OptiTrack time matchs with each sensor time
         if (sensorsTime(incrementST + firstTimeSample) + tBtOptiTrack) > tableOpti.RealTime(incrementOpT)
             vectorTime(incrementST + firstTimeSample) = incrementOpT;
         end
@@ -87,8 +87,8 @@ for increment = firstTimeSample:m
     end
     tmp = tableMatched.Frame(increment);
 end
-sensorDataTable = sensorDataTable((firstTimeSample):lastTime,:);
-tableMatched = tableMatched((firstTimeSample):lastTime,:);
+sensorDataTable = sensorDataTable(firstTimeSample:lastTime,:);
+tableMatched = tableMatched(firstTimeSample:lastTime,:);
 
 end
 
