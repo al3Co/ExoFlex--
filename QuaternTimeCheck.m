@@ -23,31 +23,32 @@ firstTimeSample = 0;
 %% verify where to start with same times (Opti and Sensors)
 for increment=1:size(sensorsTime)
      if sensorsTime(increment) >= tableOpti.RealTime(1)
-         fprintf('sensors: %d OptiTrack: %d  synchronizing...\n',sensorsTime(increment),(tableOpti.RealTime(1)));
-         firstTimeSample = increment;
+         firstTimeSample = increment + 1;
+         fprintf('Match found num: %d. Sensors: %d OptiTrack: %d \n',firstTimeSample, sensorsTime(increment),(tableOpti.RealTime(1)));
          break
      elseif increment == size(sensorsTime)
-         fprintf('Counter increment: %d files not match\n',increment);
+         fprintf('Counter increment: %d files time not match\n',increment);
          return
      end
 end
 
-% time between tests
-tBtOptiTrack = tableOpti.RealTime(2) - tableOpti.RealTime(1);
-
 %% travel vectors to match time
-% for each data sensor review if OptiTrack data match with (sensors time +
+% for each data sensor review if OptiTrack data match with them: (sensors time +
 % time between tests of OptiTrack samples)
-for incrementST=1:(size(sensorsTime)-firstTimeSample)
-    for incrementOpT=1:size(tableOpti.RealTime) % improve this method
+tBtOptiTrack = tableOpti.RealTime(2) - tableOpti.RealTime(1);       % time between tests of OptiTrack samples)
+[m,n] = size(sensorsTime);
+h = waitbar(0,'Synchronizing data...');
+for incrementST=0:(m-firstTimeSample)           % for each sensors data starting with THE match
+    for incrementOpT=1:size(tableOpti.RealTime) % review if time matchs
         if (sensorsTime(incrementST + firstTimeSample) + tBtOptiTrack) > tableOpti.RealTime(incrementOpT)
             vectorTime(incrementST + firstTimeSample) = incrementOpT;
         end
     end
+    waitbar(incrementST / (m-firstTimeSample))
 end
-
+close(h)
 % locating new data
-for increment = (firstTimeSample + 1):(size(vectorTime))
+for increment = firstTimeSample:(size(vectorTime))
     Frame(increment,1) = tableOpti.Frame(vectorTime(increment));
     Time(increment,1) = tableOpti.Time(vectorTime(increment));
     BrazoX(increment,1) = tableOpti.BrazoX(vectorTime(increment));
@@ -76,11 +77,18 @@ tableMatched = table(Frame, Time, realTime, ...
     EspaldaX, EspaldaY, EspaldaZ, ...
     refX, refY, refZ);
 
-% % extract data
-% v = [16 5 9 4 2 11 7 14];
-% v = v(3:7)     % Extract the third through the seventh elements
-% firstTimeSample // corte inicial
-% if frame actual == frame pasado // corte final
+%% cutting data
+[m,n] = size(tableMatched);
+tmp = -1;
+for increment = firstTimeSample:m
+    if tableMatched.Frame(increment) == tmp
+        lastTime = increment;
+        break
+    end
+    tmp = tableMatched.Frame(increment);
+end
+sensorDataTable = sensorDataTable((firstTimeSample):lastTime,:);
+tableMatched = tableMatched((firstTimeSample):lastTime,:);
 
 end
 
