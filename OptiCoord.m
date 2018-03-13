@@ -1,4 +1,3 @@
-%Jaime Lorenzo
 %Optitrack data reading
 function [table_Pos] = OptiCoord(ficherocsv)
 %% import text of data

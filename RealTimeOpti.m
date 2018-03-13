@@ -1,13 +1,14 @@
+%Jaime Lorenzo
 %Real time correction
-function [Tiempo] = RealTimeOpti(txt)
-%recibimos la parte de texto de los resultados de la grabación
+function [Time] = RealTimeOpti(txt)
+% getting text part of the recording results
 TimeChar = char(txt(1,10));
-%comprobamos si es AM o PM para así sumar 12 horas en caso de ser necesario
+% check if it is AM or PM to add 12 hours if necessary
 AoP = 0;
 if TimeChar(1,25) == 'P'
     AoP = 1;
 end
-%Eliminamos la fecha y el formato de la hora
+% eliminating the date and the format of the time
 for i=1:(size(TimeChar,2)-15)
     TimeChar(1,i)='x';
 end
@@ -16,14 +17,14 @@ for i=1:3
 end
 
 TStr = erase(string(TimeChar),'x');
-%Generamos un nuevo array de caracteres para cada uno de los datos
-%referentes al tiempo
+% new array of characters for each data generated
+% referring to time
 TStrh = char(TStr);
 TStrm = char(TStr);
 TStrs = char(TStr);
 
-%En esta parte eliminamos lo que no sea correspondiente en cada caso
-%horas
+% eliminating what is not corresponding in each case:
+% hours
 for i=1:(size(TStrh,2)-2)
     TStrh(1,i+2) = 'x';
 end
@@ -32,7 +33,7 @@ if AoP == 1
     TStrh = num2str(str2num(char(TStrh)) + 12);
 end
 
-%minutos
+% minutes
 for i=1:(size(TStrm,2)-5)
     TStrm(1,i+5) = 'x';
 end
@@ -41,14 +42,14 @@ for i=1:3
 end
 TStrm = erase(string(TStrm),'x'); 
 
-%segundos
+% seconds
 for i=1:6
     TStrs(1,i) = 'x';
 end
 TStrs = erase(string(TStrs),'x'); 
 
-%Convertimos los strings anteriores a formato de duración
-Tiempo = hours(str2num(char(TStrh))) + minutes(str2num(char(TStrm))) + seconds(str2num(char(TStrs)));
+% Converting previous strings to duration format
+Time = hours(str2double(char(TStrh))) + minutes(str2double(char(TStrm))) + seconds(str2double(char(TStrs)));
 
 end
 

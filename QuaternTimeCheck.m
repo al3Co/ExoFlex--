@@ -63,13 +63,13 @@ end
 brazoTmp = [(BrazoX - refX) (BrazoY - refY) (BrazoZ - refZ)];
 espaldaTmp = [(EspaldaX - refX) (EspaldaY - refY) (EspaldaZ - refZ)];
 
-aBrazoX = atan2(sqrt(brazoTmp(:,2).^2+brazoTmp(:,3).^2),brazoTmp(:,1));
-aBrazoY = atan2(sqrt(brazoTmp(:,3).^2+brazoTmp(:,1).^2),brazoTmp(:,2));
-aBrazoZ = atan2(sqrt(brazoTmp(:,1).^2+brazoTmp(:,2).^2),brazoTmp(:,3));
+angBrazoX = atan2(sqrt(brazoTmp(:,2).^2+brazoTmp(:,3).^2),brazoTmp(:,1));
+angBrazoY = atan2(sqrt(brazoTmp(:,3).^2+brazoTmp(:,1).^2),brazoTmp(:,2));
+angBrazoZ = atan2(sqrt(brazoTmp(:,1).^2+brazoTmp(:,2).^2),brazoTmp(:,3));
 
 %% create table
 tableMatched = table(Sample, Time, realTime, BrazoX, BrazoY, BrazoZ, ... 
-    aBrazoX, aBrazoY, aBrazoZ,EspaldaX, EspaldaY, EspaldaZ, refX, refY, refZ);
+    angBrazoX, angBrazoY, angBrazoZ,EspaldaX, EspaldaY, EspaldaZ, refX, refY, refZ);
 
 % % extract data
 % v = [16 5 9 4 2 11 7 14];
