@@ -1,36 +1,61 @@
-%Jaime Lorenzo
 %Optitrack data reading
-function [ArmPos,ArmAngle,Reference,Verticality,RealTime] = OptiCoord(ficherocsv)
+function [table_Pos] = OptiCoord(optiTrackXLS)
+%% import text and time of OptiTrack data
 
-%Import text of data
-[num,txt,~] = xlsread(ficherocsv);
-[TR] = RealTimeOpti(txt);
-Frames = num(1,12) + 6;
-Time = csvread(ficherocsv,7,1,[7,1,Frames,1]); 
-%Matrix with time data
-RealTime = Time;
-%Matrix with real time data
-for i=1:size(RealTime,1)
-    RealTime(i,1) = seconds(TR) + RealTime(i,1);
+% reading file
+[num,txt,~] = xlsread(optiTrackXLS);
+
+% adjunsting time 
+RTime = RealTimeOpti(txt);
+RealTime = num(8:end,2);
+for i=1:size(RealTime)
+    RealTime(i) = seconds(RTime) + RealTime(i);
 end
 
-ArmPos = csvread(ficherocsv,7,6,[7,6,Frames,8]); 
+%% complete void spaces Optitrack data
+data = ([num(8:end,1) num(8:end,2) ...
+        num(8:end,3) num(8:end,4) num(8:end,5) num(8:end,6) num(8:end,7) num(8:end,8) ...
+        num(8:end,10) num(8:end,11) num(8:end,12) num(8:end,13) num(8:end,14) num(8:end,15) ...
+        num(8:end,35) num(8:end,36) num(8:end,37)]);
 
-ArmAngle = csvread(ficherocsv,7,2,[7,2,Frames,4]);
+[m,n] = size(data);
+pastData = 0;
+% if nan value on matrix, nan changes for previous immediate value
+for col=1:n
+    for i = 1:m
+      if isnan(data(i, col))
+        data(i, col) = pastData;
+      end
+      pastData = data(i, col);
+    end
+    pastData = 0;
+end
 
-Reference = csvread(ficherocsv,7,34,[7,34,Frames,36]);
+%% create table
+Frame = data(:,1);
+Time = data(:,2);
 
-Verticality = csvread(ficherocsv,7,9,[7,9,Frames,11]);
+BrazoRotX = data(:,3);
+BrazoRotY = data(:,4);
+BrazoRotZ = data(:,5);
+BrazoX = data(:,6);
+BrazoY = data(:,7);
+BrazoZ = data(:,8);
 
-%Mostrar posiciones respecto al tiempo
-% plot(Time,ArmAngle(:,1),'Color','b')
-% hold on
-% plot(Time,ArmAngle(:,2),'Color','g')
-% plot(Time,ArmAngle(:,3),'Color','r')
-% title('Posición Hombro')
-% xlim([0 Time(size(Time,1),1)]);
-% xlabel('Tiempo');
-% ylabel('XYZ');
-% set(gca,'XGrid','on','YGrid','on');
+EspaldaRotX = data(:,9);
+EspaldaRotY = data(:,10);
+EspaldaRotZ = data(:,11);
+EspaldaX = data(:,12);
+EspaldaY = data(:,13);
+EspaldaZ = data(:,14);
+
+refX = data(:,15);
+refY = data(:,16);
+refZ = data(:,17);
+
+table_Pos = table(Frame, Time, RealTime, ...
+            BrazoRotX, BrazoRotY, BrazoRotZ, BrazoX, BrazoY, BrazoZ, ...
+            EspaldaRotX, EspaldaRotY, EspaldaRotZ, EspaldaX, EspaldaY, EspaldaZ, ...
+            refX, refY, refZ);
 
 end

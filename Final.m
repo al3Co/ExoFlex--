@@ -1,9 +1,15 @@
-prompt = ('Enter sensor data file name: ');
-SensorFile = input(prompt,'s');
-prompt = ('Enter optitrack data file name: ');
-ficherocsv = input(prompt,'s');
+clear
+close all
+clc
 
-[ArmPos,ArmAngle,Reference,Verticality,RealTime] = OptiCoord(ficherocsv);
-[X,Y,Z,XV,YV,ZV] = QuaternTimeCheck(SensorFile,ArmAngle,Verticality,RealTime);
-BrazoGF = [X,Y,Z];
-EspaldaGF = [XV,YV,ZV];
+prompt = ('Enter sensor data file name (XLS file): ');
+sensorFile = input(prompt,'s');
+prompt = ('Enter optitrack data file name (XLS file): ');
+optiTrackXLS = input(prompt,'s');
+tic
+% function to extract OptiTrack data and filling void spaces
+[tableOpti] = OptiCoord(optiTrackXLS);
+% function to get sensors table and Match time with OptiTrack Data
+[tableSensorsData, tableMatched] = QuaternTimeCheck(tableOpti, sensorFile);
+toc
+disp('done')
