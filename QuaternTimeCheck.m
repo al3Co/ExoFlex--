@@ -4,7 +4,7 @@ sensorDataTable = readtable(SensorFile);
 sensorsTime = seconds(hours(sensorDataTable.Hour) + minutes(sensorDataTable.Minute) + seconds(sensorDataTable.Sec));
 
 %% initialize variables
-Sample = zeros(size(sensorsTime,1),1);
+Frame = zeros(size(sensorsTime,1),1);
 Time = zeros(size(sensorsTime,1),1);
 BrazoX = zeros(size(sensorsTime,1),1);
 BrazoY = zeros(size(sensorsTime,1),1);
@@ -26,6 +26,9 @@ for increment=1:size(sensorsTime)
          fprintf('sensors: %d OptiTrack: %d  synchronizing...\n',sensorsTime(increment),(tableOpti.RealTime(1)));
          firstTimeSample = increment;
          break
+     elseif increment == size(sensorsTime)
+         fprintf('Counter increment: %d files not match\n',increment);
+         return
      end
 end
 
@@ -43,9 +46,9 @@ for incrementST=1:(size(sensorsTime)-firstTimeSample)
     end
 end
 
-%% locating new data
+% locating new data
 for increment = (firstTimeSample + 1):(size(vectorTime))
-    Sample(increment,1) = tableOpti.Sample(vectorTime(increment));
+    Frame(increment,1) = tableOpti.Frame(vectorTime(increment));
     Time(increment,1) = tableOpti.Time(vectorTime(increment));
     BrazoX(increment,1) = tableOpti.BrazoX(vectorTime(increment));
     BrazoY(increment,1) = tableOpti.BrazoY(vectorTime(increment));
@@ -68,12 +71,16 @@ angBrazoY = atan2(sqrt(brazoTmp(:,3).^2+brazoTmp(:,1).^2),brazoTmp(:,2));
 angBrazoZ = atan2(sqrt(brazoTmp(:,1).^2+brazoTmp(:,2).^2),brazoTmp(:,3));
 
 %% create table
-tableMatched = table(Sample, Time, realTime, BrazoX, BrazoY, BrazoZ, ... 
-    angBrazoX, angBrazoY, angBrazoZ,EspaldaX, EspaldaY, EspaldaZ, refX, refY, refZ);
+tableMatched = table(Frame, Time, realTime, ...
+    BrazoX, BrazoY, BrazoZ, angBrazoX, angBrazoY, angBrazoZ, ...
+    EspaldaX, EspaldaY, EspaldaZ, ...
+    refX, refY, refZ);
 
 % % extract data
 % v = [16 5 9 4 2 11 7 14];
 % v = v(3:7)     % Extract the third through the seventh elements
+% firstTimeSample // corte inicial
+% if frame actual == frame pasado // corte final
 
 end
 

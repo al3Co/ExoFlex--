@@ -1,25 +1,23 @@
 %Optitrack data reading
-function [table_Pos] = OptiCoord(ficherocsv)
-%% import text of data
-ficheroxlsx = [ficherocsv, '.xlsx'];
-[num,txt,~] = xlsread(ficheroxlsx);
-[TR] = RealTimeOpti(txt);
-Frames = num(1,12) + 6;
-ficherocsv = [ficherocsv, '.csv'];
-Time = csvread(ficherocsv,7,1,[7,1,Frames,1]);
+function [table_Pos] = OptiCoord(optiTrackXLS)
+%% import text and time of OptiTrack data
 
-%Matrix with time data
-RealTime = Time;
+% reading file
+[num,txt,~] = xlsread(optiTrackXLS);
 
-%Matrix with real time data
-for i=1:size(RealTime,1)
-    RealTime(i,1) = seconds(TR) + RealTime(i,1);
+% adjunsting time 
+RTime = RealTimeOpti(txt);
+RealTime = num(8:end,2);
+for i=1:size(RealTime)
+    RealTime(i) = seconds(RTime) + RealTime(i);
 end
 
 %% complete void spaces Optitrack data
-T = readtable(ficherocsv);
-% data = str2double([T.RigidBody(5:end) T.RigidBody_1(5:end) T.RigidBody_2(5:end) T.RigidBody_7(5:end) T.RigidBody_8(5:end) T.RigidBody_9(5:end)]);
-data = str2double([T.Var1(5:end) T.Var2(5:end) T.RigidBody_3(5:end) T.RigidBody_4(5:end) T.RigidBody_5(5:end) T.RigidBody_10(5:end) T.RigidBody_11(5:end) T.RigidBody_12(5:end) T.Marker_18(5:end) T.Marker_19(5:end) T.Marker_20(5:end)]);
+data = ([num(8:end,1) num(8:end,2) ...
+        num(8:end,3) num(8:end,4) num(8:end,5) num(8:end,6) num(8:end,7) num(8:end,8) ...
+        num(8:end,10) num(8:end,11) num(8:end,12) num(8:end,13) num(8:end,14) num(8:end,15) ...
+        num(8:end,35) num(8:end,36) num(8:end,37)]);
+
 [m,n] = size(data);
 pastData = 0;
 % if nan value on matrix, nan changes for previous immediate value
@@ -34,17 +32,30 @@ for col=1:n
 end
 
 %% create table
-Sample = data(:,1);
+Frame = data(:,1);
 Time = data(:,2);
-BrazoX = data(:,3);
-BrazoY = data(:,4);
-BrazoZ = data(:,5);
-EspaldaX = data(:,6);
-EspaldaY = data(:,7);
-EspaldaZ = data(:,8);
-refX = data(:,9);
-refY = data(:,10);
-refZ = data(:,11);
-table_Pos = table(Sample, Time, BrazoX, BrazoY, BrazoZ, EspaldaX, EspaldaY, EspaldaZ, refX, refY, refZ, RealTime);
+
+BrazoRotX = data(:,3);
+BrazoRotY = data(:,4);
+BrazoRotZ = data(:,5);
+BrazoX = data(:,6);
+BrazoY = data(:,7);
+BrazoZ = data(:,8);
+
+EspaldaRotX = data(:,9);
+EspaldaRotY = data(:,10);
+EspaldaRotZ = data(:,11);
+EspaldaX = data(:,12);
+EspaldaY = data(:,13);
+EspaldaZ = data(:,14);
+
+refX = data(:,15);
+refY = data(:,16);
+refZ = data(:,17);
+
+table_Pos = table(Frame, Time, RealTime, ...
+            BrazoRotX, BrazoRotY, BrazoRotZ, BrazoX, BrazoY, BrazoZ, ...
+            EspaldaRotX, EspaldaRotY, EspaldaRotZ, EspaldaX, EspaldaY, EspaldaZ, ...
+            refX, refY, refZ);
 
 end

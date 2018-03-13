@@ -30,7 +30,7 @@ for i=1:(size(TStrh,2)-2)
 end
 TStrh = erase(string(TStrh),'x');
 if AoP == 1
-    TStrh = num2str(str2num(char(TStrh)) + 12);
+    TStrh = num2str(str2double(char(TStrh)) + 12);
 end
 
 % minutes
