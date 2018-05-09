@@ -1,6 +1,6 @@
-function [sensorDataTable, tableMatched] = QuaternTimeCheck(tableOpti, SensorFile)
+function [sensorDataTable, tableMatched] = QuaternTimeCheck(tableOpti, sensorFile)
 %% get time from sensors file
-sensorDataTable = readtable(SensorFile);
+sensorDataTable = readtable(sensorFile);
 sensorsTime = seconds(hours(sensorDataTable.Hour) + minutes(sensorDataTable.Minute) + seconds(sensorDataTable.Sec));
 
 %% initialize variables
@@ -80,6 +80,7 @@ tableMatched = table(Frame, Time, realTime, ...
 %% cutting data
 [m,n] = size(tableMatched);
 tmp = -1;
+lastTime = m;
 for increment = firstTimeSample:m
     if tableMatched.Frame(increment) == tmp
         lastTime = increment;
