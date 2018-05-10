@@ -3,7 +3,7 @@ close all
 clc
 
 %% user data
-prompt = ('Enter sensor data file name (XLS file): ');
+prompt = ('Enter sensor data file name (TXT file): ');
 sensorFile = input(prompt,'s');
 prompt = ('Enter optitrack data file name (XLS file): ');
 optiTrackXLS = input(prompt,'s');
