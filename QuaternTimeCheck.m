@@ -47,6 +47,7 @@ for incrementST=0:(m-firstTimeSample)           % for each sensors data starting
     waitbar(incrementST / (m-firstTimeSample))
 end
 close(h)
+
 % locating new data
 for increment = firstTimeSample:(size(vectorTime))
     Frame(increment,1) = tableOpti.Frame(vectorTime(increment));
@@ -64,6 +65,7 @@ for increment = firstTimeSample:(size(vectorTime))
 end
 
 %% angles
+
 brazoTmp = [(BrazoX - refX) (BrazoY - refY) (BrazoZ - refZ)];
 espaldaTmp = [(EspaldaX - refX) (EspaldaY - refY) (EspaldaZ - refZ)];
 
