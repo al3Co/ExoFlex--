@@ -37,6 +37,7 @@ for K = 1 : length(dinfo)
         c = 0;
     end
     c = c+1;
+    % save(filename,variables)
 end
 toc
 plot(Ttotal)
