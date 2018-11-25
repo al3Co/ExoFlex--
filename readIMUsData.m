@@ -6,9 +6,9 @@ clc
 Ttotal = [];
 T3 = [];
 c = 1;
-
+expand = 20;
 % import data direcotry
-dir_to_search = 'C:\Users\disam\Documents\OneDrive_AldoContreras\OneDrive - Universidad Politécnica de Madrid\ExoFlex\Publications\Access\Tests\dataAcquired\test2\IMUs';
+dir_to_search = 'C:\Users\disam\OneDrive - Universidad Politécnica de Madrid\ExoFlex\Publications\Access\Tests\dataAcquired\test2\IMUs';
 txtpattern = fullfile(dir_to_search, '*.txt');
 dinfo = dir(txtpattern);
 
@@ -16,14 +16,16 @@ for K = 1 : length(dinfo)
     filename = fullfile(dir_to_search, dinfo(K).name);  %just the name
     disp(filename)
     T = readtable(filename);
-    imusQuat = table2array(T(:,14:17));
+    DateVector = [interpolFunc(datevec(T.Var1(1)),expand,1), interpolFunc(T.Var2(1),expand,2)];
+    imusQuat = interpolFunc(table2array(T(:,14:17)),expand,3);
+    imuData = [DateVector, imusQuat];
     if c<=3
         T3 = [T3, imusQuat];
     end
 
-    plot(imusQuat)
-    title(filename)
-    pause(4)
+%     plot(imusQuat)
+%     title(filename)
+%     pause(4)
     
     if c == 3
         Ttotal = [Ttotal; T3];
