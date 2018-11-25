@@ -4,7 +4,7 @@ function x = interpolFunc (a,n,opt)
     % a=[1 -5 -2 2 4 7 9 10 13 10; 1 2 3 5 6 7 9 10 18 5]';
     % number of nans between values
     % n = 10;
-    % opt = method
+    % opt = method 1 for time secs 2 for time milisecs 3 for data
 
     [row,~] = size(a);
     rows = row*(n+1);
@@ -12,6 +12,8 @@ function x = interpolFunc (a,n,opt)
     flag = true;
     cFill = 1;
     c = 0;
+    
+    % method to fill with nans between data
     for r = 1:rows
         if flag == false
             a_new(r,:) = NaN;
@@ -28,12 +30,11 @@ function x = interpolFunc (a,n,opt)
             flag = false;
         end
     end
+    
+    % interpolate data
     x = a_new(1:end-n,:);
     nanx = isnan(x);
-    t    = 1:numel(x);
-    % 1 for time secs
-    % 2 for time milisecs
-    % 3 for data
+    t = 1:numel(x);
     if opt == 1
         x(nanx) = interp1(t(~nanx), x(~nanx), t(nanx), 'nearest');
     elseif opt == 2
