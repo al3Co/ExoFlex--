@@ -10,7 +10,7 @@ MSEtotal = [];
 RMSEtotal = [];
 Ttotal = [];
 % import data direcotry
-dir_to_search = 'C:\Users\disam\OneDrive - Universidad Politécnica de Madrid\ExoFlex\Publications\Access\Tests\dataAcquired\FlexSens';
+dir_to_search = 'C:\Users\disam\Documents\GitHub\FlexSensor\Arduino\serialLily';
 txtpattern = fullfile(dir_to_search, '*.txt');
 dinfo = dir(txtpattern);
 
