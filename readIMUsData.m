@@ -6,7 +6,7 @@ clc
 expand = 10;
 c = 1;
 % import data direcotry
-dir_to_search = 'C:\Users\disam\Documents\OneDrive_AldoContreras\OneDrive - Universidad Politécnica de Madrid\ExoFlex\Publications\Access\Tests\dataAcquired\test2\IMUs';
+dir_to_search = 'C:\Users\disam\Documents\GitHub\LPMS-IMUsensors';
 txtpattern = fullfile(dir_to_search, '*.txt');
 dinfo = dir(txtpattern);
 tic
