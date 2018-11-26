@@ -2,21 +2,23 @@ clear
 close
 clc
 
-T = readtable('20181126-100941A.txt');
+% write here the name of the file to read
+T = readtable('');
 sens = [T.Var3, T.Var4, T.Var5, T.Var6, T.Var7, T.Var8, T.Var9, T.Var10, T.Var11, T.Var12];
 sens = sgolayfilt(sens,3,41);
 plot(sens)
 
-A1 = 1755;  % inicio 1/ fin vacio1
-A2 = 10990; % inicio vacio 2 / 
-A3 = 12520; % inicio 2
-A4 = 21160; % inicio vacio 3 
-A5 = 22220;% inicio 3
-A6 = 29930;% inicio vacio 4
-A7 = 31020;% inicio 4
-A8 = 38410;% inicio vacio 5
-A9 = 40410;% inicio 5
-A10 =47500;% inicio 5
+%%
+A1 = ;  % inicio 1/ fin vacio1
+A2 = ; % inicio vacio 2 
+A3 = ; % inicio 2
+A4 = ; % inicio vacio 3 
+A5 = ;% inicio 3
+A6 = ;% inicio vacio 4
+A7 = ;% inicio 4
+A8 = ;% inicio vacio 5
+A9 = ;% inicio 5
+A10 =;% inicio vacio 6
 
 mov = zeros(size(sens,1),1);
 mov(1:A1,    1) = 0;   % void data
