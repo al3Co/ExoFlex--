@@ -1,24 +1,46 @@
-function t_result convertToTable (T, num)
-% T = load('20181121-134612A.mat');
-% T = struct2cell(T);
-% T = T{1};
-expand = 10;
-T = readtable('C:\Users\disam\Documents\OneDrive_AldoContreras\OneDrive - Universidad Politécnica de Madrid\ExoFlex\Publications\Access\Tests\dataAcquired\test2\IMUs\Aldo1dataIMU1_2018-11-21T124548.txt');
-% time
-if num == 1
-    DateVector = interpolSecsFunc(interpolFunc(datevec(T.Var1),expand,1));
-    HH = DateVector(:,1);
-    MM = DateVector(:,2);
-    SS = DateVector(:,3);
-    MS = DateVector(:,4);
-    t_result = table(HH,MM,SS,MS);
+close
+clear
+clc
+
+% load flex sensor file
+T_s = struct2cell(load('C:\Users\disam\Documents\OneDrive_AldoContreras\OneDrive - Universidad Politécnica de Madrid\ExoFlex\Publications\Access\Tests\dataAcquired\test2\FlexSens\20181121-122033A.mat'));
+T_s = T_s{1};
+% load imus file
+T_i = struct2cell(load('C:\Users\disam\Documents\OneDrive_AldoContreras\OneDrive - Universidad Politécnica de Madrid\ExoFlex\Publications\Access\Tests\dataAcquired\test2\IMUs\21T122029.mat'));
+T_i = T_i{1};
+
+% change all time to milliseconds
+flexTime = milliseconds(T_s.Time);
+imusTime = milliseconds(hours(T_i.HH) + minutes(T_i.MM) + seconds(T_i.SS)+ milliseconds(T_i.MS));
+
+
+% verify where it start with same time
+% the short runs the large
+for increment=1:size(imusTime)
+     if imusTime(increment) >= flexTime(1)
+         firstTimeSample = increment + 1;
+         fprintf('Match found num: %d. Sensors: %d OptiTrack: %d \n',firstTimeSample, imusTime(increment),(flexTime(1)));
+         break
+     elseif increment == size(imusTime)
+         fprintf('Counter increment: %d. Time files do not match\n',increment);
+         return
+     end
 end
 
-% Quaternions
-imuData = interpolFunc(table2array(T(:,14:20)),expand,3);
-% create table with data
-data = num2cell(imuData);
-t_result(:,5:11) = data;
-varNames = {'HH','MM','SS','MS','Q1','Q2','Q3','Q4','Eu1','Eu2','Eu3'};
-t_result.Properties.VariableNames = varNames;
+% time between OptiTrack samples
+%tBtOptiTrack = tableOpti.RealTime(2) - tableOpti.RealTime(1);
+tBs = imusTime(2) - imusTime(1);
+
+[m,n] = size(imusTime);
+h = waitbar(0,'Synchronizing data...');
+% for each sensors data starting with THE match
+for iShort=0:(m-firstTimeSample)
+    for iLarge=1:size(flexTime) % review if OptiTrack time matchs with each sensor time
+        if (imusTime(iShort + firstTimeSample) + tBs) > flexTime(iLarge)
+            vectorTime(iShort + firstTimeSample) = iLarge;
+        end
+    end
+    waitbar(iShort / (m-firstTimeSample))
 end
+close(h)
+
