@@ -44,3 +44,20 @@ for iShort=0:(m-firstTimeSample)
 end
 close(h)
 
+%
+% locating new data
+% for increment = firstTimeSample:(size(vectorTime))
+%     Frame(increment,1) = tableOpti.Frame(vectorTime(increment));
+%     Time(increment,1) = tableOpti.Time(vectorTime(increment));
+%     BrazoX(increment,1) = tableOpti.BrazoX(vectorTime(increment));
+%     BrazoY(increment,1) = tableOpti.BrazoY(vectorTime(increment));
+%     BrazoZ(increment,1) = tableOpti.BrazoZ(vectorTime(increment));
+%     EspaldaX(increment,1) = tableOpti.EspaldaX(vectorTime(increment));
+%     EspaldaY(increment,1) = tableOpti.EspaldaY(vectorTime(increment));
+%     EspaldaZ(increment,1) = tableOpti.EspaldaZ(vectorTime(increment));
+%     refX(increment,1) = tableOpti.refX(vectorTime(increment));
+%     refY(increment,1) = tableOpti.refY(vectorTime(increment));
+%     refZ(increment,1) = tableOpti.refZ(vectorTime(increment));
+%     realTime(increment,1) = tableOpti.RealTime(vectorTime(increment));
+% end
+
