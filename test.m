@@ -1,12 +1,9 @@
-close
-clear
-clc
-
+function T = test(T_s, T_i)
 % load flex sensor file
-T_s = struct2cell(load('C:\Users\disam\Documents\OneDrive_AldoContreras\OneDrive - Universidad Politécnica de Madrid\ExoFlex\Publications\Access\Tests\dataAcquired\test2\FlexSens\20181121-122033A.mat'));
+%T_s = struct2cell(load('C:\Users\disam\OneDrive - Universidad Politécnica de Madrid\ExoFlex\Publications\Access\Tests\dataAcquired\test2\FlexSens\20181121-122033A.mat'));
 T_s = T_s{1};
 % load imus file
-T_i = struct2cell(load('C:\Users\disam\Documents\OneDrive_AldoContreras\OneDrive - Universidad Politécnica de Madrid\ExoFlex\Publications\Access\Tests\dataAcquired\test2\IMUs\21T122029.mat'));
+%T_i = struct2cell(load('C:\Users\disam\OneDrive - Universidad Politécnica de Madrid\ExoFlex\Publications\Access\Tests\dataAcquired\test2\IMUs\21T122029.mat'));
 T_i = T_i{1};
 
 % change all time to milliseconds
@@ -44,20 +41,17 @@ for iShort=0:(m-firstTimeSample)
 end
 close(h)
 
-%
 % locating new data
-% for increment = firstTimeSample:(size(vectorTime))
-%     Frame(increment,1) = tableOpti.Frame(vectorTime(increment));
-%     Time(increment,1) = tableOpti.Time(vectorTime(increment));
-%     BrazoX(increment,1) = tableOpti.BrazoX(vectorTime(increment));
-%     BrazoY(increment,1) = tableOpti.BrazoY(vectorTime(increment));
-%     BrazoZ(increment,1) = tableOpti.BrazoZ(vectorTime(increment));
-%     EspaldaX(increment,1) = tableOpti.EspaldaX(vectorTime(increment));
-%     EspaldaY(increment,1) = tableOpti.EspaldaY(vectorTime(increment));
-%     EspaldaZ(increment,1) = tableOpti.EspaldaZ(vectorTime(increment));
-%     refX(increment,1) = tableOpti.refX(vectorTime(increment));
-%     refY(increment,1) = tableOpti.refY(vectorTime(increment));
-%     refZ(increment,1) = tableOpti.refZ(vectorTime(increment));
-%     realTime(increment,1) = tableOpti.RealTime(vectorTime(increment));
-% end
+varsS = T_s.Properties.VariableNames;
+varsI = T_i.Properties.VariableNames;
+[~,lenTime] = size(vectorTime);
 
+T = table;
+for increment = firstTimeSample:(lenTime)
+    x = table(T_s(vectorTime(increment),varsS));
+    y = table(T_i(increment,varsI));
+    T = [T; [x.Var1, y.Var1]];
+end
+
+end
+% save('pqfile.mat','T')

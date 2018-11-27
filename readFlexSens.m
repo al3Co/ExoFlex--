@@ -3,23 +3,31 @@ close
 clc
 
 Ttotal = [];
-% import data direcotry
-dir_to_search = 'C:\Users\disam\Documents\OneDrive_AldoContreras\OneDrive - Universidad Politécnica de Madrid\ExoFlex\Publications\Access\Tests\dataAcquired\test2\FlexSens';
-txtpattern = fullfile(dir_to_search, '*.mat');
-dinfo = dir(txtpattern);
+% import FS direcotry
+dir_FS = 'C:\Users\disam\OneDrive - Universidad Politécnica de Madrid\ExoFlex\Publications\Access\Tests\dataAcquired\test2\FlexSens';
+dinfoFS = dir(fullfile(dir_FS, '*.mat'));
+% import IMU direcotry
+dir_IMU = 'C:\Users\disam\OneDrive - Universidad Politécnica de Madrid\ExoFlex\Publications\Access\Tests\dataAcquired\test2\IMUs';
+dinfoIMU = dir(fullfile(dir_IMU, '*.mat'));
 
 % read each file
-for K = 1 : length(dinfo)
-    filename = fullfile(dir_to_search, dinfo(K).name);  %just the name
-    name = erase(extractAfter(filename,'1811'),'.mat');
-    disp(name)
-    T = struct2cell(load(filename));
-    T = T{1};
-    sens = [T.S1, T.S2, T.S3, T.S4, T.S5, T.S6, T.S7, T.S8, T.S9, T.S10];
-    Ttotal = [Ttotal; sens];
-    plot(sens)
+for K = 1 : length(dinfoFS)
     disp(K)
-    pause(1)
+    % FlexSens files
+    filenameS = fullfile(dir_FS, dinfoFS(K).name);
+    nameS = extractAfter(filenameS,'2018');
+    disp(nameS)
+    T_s = struct2cell(load(filenameS));
+    T_s = T_s{1};
+    % imus files
+    filenameI = fullfile(dir_IMU, dinfoIMU(K).name);
+    nameIMU = extractAfter(filenameI,'\IMUs\');
+    disp(nameIMU)
+    T_i = struct2cell(load(filenameI));
+    T_i = T_i{1};
+    % match data
+    % T = matchIMU_FlexSTablesFunc(T_s, T_i, 1);
+    % store variable
+    nameSave = strcat('IMU_FS_',extractAfter(filenameI,'\IMUs\'));
+    save(nameSave,'T')
 end
-
-plot(Ttotal)

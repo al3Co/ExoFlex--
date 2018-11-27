@@ -1,31 +1,41 @@
-%Jaime Lorenzo
-%Optitrack data reading
-% 
-%Import text of data
-ficherocsv = 'C:\Users\disam\Documents\OneDrive_AldoContreras\OneDrive - Universidad Politécnica de Madrid\ExoFlex\Publications\Access\Tests\dataAcquired\test2\OptiTrack\Sujeto3 2018-11-26 12.45.18 AM _.csv';
-[num,txt,~] = xlsread(ficherocsv);
-[TR] = RealTimeOpti(txt);
-Frames = num(1,12) + 6;
-Time = csvread(ficherocsv,7,1,[7,1,Frames,1]); 
-%Matrix with time data
-RealTime = Time;
-%Matrix with real time data
-for i=1:size(RealTime,1)
-    RealTime(i,1) = seconds(TR) + RealTime(i,1);
+clear
+close
+clc
+
+% import FS direcotry
+path = 'C:\Users\disam\OneDrive - Universidad Politécnica de Madrid\ExoFlex\Publications\Access\Tests\dataAcquired\test2\OptiTrack\csvFixed';
+dinfo = dir(fullfile(path, '*.csv'));
+
+% read each file
+for K = 1 : length(dinfo)
+    %T = readtable('C:\Users\disam\OneDrive - Universidad Politécnica de Madrid\ExoFlex\Publications\Access\Tests\dataAcquired\test2\OptiTrack\csvFixed\20181121 122444.csv');
+    filename = fullfile(path, dinfo(K).name);
+    nameS = extractAfter(filename,'csvFixed\');
+    disp(nameS)
+    
+    T = readtable(filename);
+    startTime = extractAfter(T.Properties.VariableNames(1),'x');
+    startTime = strrep(startTime,'L','-');
+    startTime = strrep(startTime,'S',' ');
+    startTime = strrep(startTime,'D',':');
+    startTime = strrep(startTime,'M','.');
+    startTime = startTime{1};
+    t = datetime(startTime,'InputFormat','yyyy-MM-dd HH:mm:ss.SSS');
+    
+    tnew = NaT(height(T),1);
+    for i = 1:height(T)
+        tnew(i,:) = t + seconds((T.(1)(i)));
+    end
+    % splitcells = regexp(startTime, ':', 'split');
+    % splitcells = str2double(splitcells{1});
+    % ateN = datenum(splitcells);
+    
+    % startTime = milliseconds(hours(startTime(4)) + minutes(startTime(5)) + seconds(startTime(6))+ milliseconds(startTime(7)));
+    
+    T.(1) = tnew;
+    
+    T.Properties.VariableNames(1) = {'TimeOpt'};
+    T.TimeOpt.Format = 'yyyy-MM-dd HH:mm:ss.SSS';
+    nameS = strcat(erase(nameS,'.csv'),'.mat');
+    save(nameS,'T')
 end
-
-ArmPos = csvread(ficherocsv,7,6,[7,6,Frames,8]); 
-ArmAngle = csvread(ficherocsv,7,2,[7,2,Frames,4]);
-Reference = csvread(ficherocsv,7,34,[7,34,Frames,36]);
-Verticality = csvread(ficherocsv,7,9,[7,9,Frames,11]);
-
-%Mostrar posiciones respecto al tiempo
-% plot(Time,ArmAngle(:,1),'Color','b')
-% hold on
-% plot(Time,ArmAngle(:,2),'Color','g')
-% plot(Time,ArmAngle(:,3),'Color','r')
-% title('Posición Hombro')
-% xlim([0 Time(size(Time,1),1)]);
-% xlabel('Tiempo');
-% ylabel('XYZ');
-% set(gca,'XGrid','on','YGrid','on');
