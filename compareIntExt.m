@@ -4,17 +4,19 @@ clear
 close
 clc
 
-plotData = false;
+plotData = true;
 smooth = true;
 MSEtotal = [];
 RMSEtotal = [];
 Ttotal = [];
+process = false;
 % import data direcotry
-dir_to_search = 'C:\Users\disam\Documents\GitHub\FlexSensor\Arduino\serialLily';
+dir_to_search = 'C:\Users\disam\OneDrive - Universidad Politécnica de Madrid\ExoFlex\Publications\Access\Tests\dataAcquired\test1\FlexSens';
 txtpattern = fullfile(dir_to_search, '*.txt');
 dinfo = dir(txtpattern);
 
 for K = 1 : length(dinfo)
+    if K == 2
     filename = fullfile(dir_to_search, dinfo(K).name);  %just the name
     
     % disp(filename)
@@ -41,49 +43,54 @@ for K = 1 : length(dinfo)
     
     % plot data
     if plotData
-        sensor = 2;
+        sensor = 4; % sensor to be plotted in figure 2
         figure(1)
-        plotIntVsExt (intN, extN)
+        plotIntVsExt (intN, extN, 1)
         figure(2)
-        plotIntVsExt (intN(:,sensor), extN(:,sensor))
+        plotIntVsExt (intN(:,sensor), extN(:,sensor), 2)
         figure(3)
         bar(MSE)
         figure(4)
         bar(RMSE)
         pause(5)
     end
+    %process = true;
+    end
 end
 
-% smooth all test data
-if smooth
-    Ttotal(:,3:12) = array2table(sgolayfilt(table2array(Ttotal(:,3:12)),3,41));
+if process == true
+    % smooth all test data
+    if smooth
+        Ttotal(:,3:12) = array2table(sgolayfilt(table2array(Ttotal(:,3:12)),3,41));
+    end
+    extT = [Ttotal.Var3, Ttotal.Var4, Ttotal.Var5, Ttotal.Var6, Ttotal.Var7];
+    intT = [Ttotal.Var8, Ttotal.Var9, Ttotal.Var10, Ttotal.Var11, Ttotal.Var12];
+
+    % all test Data
+    % normalize data
+    extT = normalize(extT,'range');
+    intT = normalize(intT,'range');
+    [E,SQE,MSE,RMSE] = errorCalcFunc (intT, extT);
+    meanRMSE = RMSE;
+
+    figure(1)
+    hold on
+    bar(RMSEtotal)
+
+    xlabel('Tests');
+    ylabel('RMSE');
+    legend('Sensors Position 1','Sensors Position 2','Sensors Position 3',...
+        'Sensors Position 4','Sensors Position 5');
+    title('Root Mean Square Error between interior and exterior sensors');
+    hold off
+
+    figure(2)
+    hold on
+    bar(meanRMSE)
+    xlabel('Sensor Position');
+    ylabel('RMSE');
+    title('Root Mean Square Error between interior and exterior sensors');
+    hold off
+else
+    disp('no files analized')
 end
-extT = [Ttotal.Var3, Ttotal.Var4, Ttotal.Var5, Ttotal.Var6, Ttotal.Var7];
-intT = [Ttotal.Var8, Ttotal.Var9, Ttotal.Var10, Ttotal.Var11, Ttotal.Var12];
-
-% all test Data
-% normalize data
-extT = normalize(extT,'range');
-intT = normalize(intT,'range');
-[E,SQE,MSE,RMSE] = errorCalcFunc (intT, extT);
-meanRMSE = RMSE;
-
-figure(1)
-hold on
-bar(RMSEtotal)
-
-xlabel('Number of tests');
-ylabel('RMSE');
-legend('Sensors Position A','Sensors Position B','Sensors Position C',...
-    'Sensors Position C','Sensors Position D');
-title('Root Mean Square Error between interior and exterior sensors');
-hold off
-
-figure(2)
-hold on
-bar(meanRMSE)
-xlabel('Sensor Position');
-ylabel('RMSE');
-title('Root Mean Square Error between interior and exterior sensors');
-hold off
-
