@@ -29,7 +29,17 @@ input10 = PCAsens;          target10 = opArm;
 input11 = PCAsens;          target11 = [opArm, imuArmQ];
 input12 = PCAsens;          target12 = dvKoM;
 
-
-
+save('input1.mat','input1'); save('target1.mat','target1'); 
+save('input2.mat','input2'); save('target2.mat','target2'); 
+save('input3.mat','input3'); save('target3.mat','target3'); 
+save('input4.mat','input4'); save('target4.mat','target4'); 
+save('input5.mat','input5'); save('target5.mat','target5'); 
+save('input6.mat','input6'); save('target6.mat','target6'); 
+save('input7.mat','input7'); save('target7.mat','target7'); 
+save('input8.mat','input8'); save('target8.mat','target8'); 
+save('input9.mat','input9'); save('target9.mat','target9'); 
+save('input10.mat','input10'); save('target10.mat','target10'); 
+save('input11.mat','input11'); save('target11.mat','target11'); 
+save('input12.mat','input12'); save('target12.mat','target12');
 
 
