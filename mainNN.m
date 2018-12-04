@@ -18,20 +18,21 @@ delays = [2];
 % read each file
 for K = 1 : length(dinfoinput)
     % input files
+    if K >= 13 && K <= 16
     filenameI = fullfile(dir_input, dinfoinput(K).name);
-    disp(extractAfter(filenameI,'\input\'))
+    disp(extractAfter(filenameI,'\Input\'))
     T_input = struct2cell(load(filenameI));
     T_input = T_input{1};
     
     % output files
     filenameT = fullfile(dir_target, dinftarget(K).name);
-    disp(extractAfter(filenameT,'\target\'))
+    disp(extractAfter(filenameT,'\Target\'))
     T_target = struct2cell(load(filenameT));
     T_target = T_target{1};
     
     for h = 1 :length(hiddenL)
         for d = 1:length(delays)
-            fprintf('\n \t NN file:%d hidden:%d delay:%d \n',K, hiddenL(h), delays(d));
+            fprintf('NN file:%d hidden:%d delay:%d \n',K, hiddenL(h), delays(d));
             % NN function
             [results, regr] = timeSeriesNN(T_input,T_target, hiddenL(h), delays(d));
             % results storage
@@ -39,5 +40,9 @@ for K = 1 : length(dinfoinput)
             global_regression = [global_regression; regr];
         end
     end
+    end
 end
 clear('K', 'dir_input', 'dinfoinput', 'dir_target', 'dinftarget', 'h', 'd');
+
+csvwrite('global_performance.csv',global_performance);
+csvwrite('global_regression.csv',global_regression);
