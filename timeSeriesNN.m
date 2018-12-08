@@ -140,7 +140,7 @@ stepAheadPerformance = perform(nets,ts,ys);
 
 perfMSE = mse(net,t,y,e);
 [r,m,b] = regression(t,y);
-
 regr = [r m b];
+regr = max(regr);
 results = [performance, trainPerformance, valPerformance, testPerformance, closedLoopPerformance, multiStepPerformance, stepAheadPerformance, perfMSE];
 end
