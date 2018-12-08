@@ -43,3 +43,6 @@ for K = 1 : length(dinfoinput)
     end
 end
 clear('K', 'dir_input', 'dinfoinput', 'dir_target', 'dinftarget', 'h', 'd');
+
+csvwrite('global_performance.csv',global_performance) 
+csvwrite('global_regression.csv',global_regression)
