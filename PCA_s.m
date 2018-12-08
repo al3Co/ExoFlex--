@@ -6,10 +6,13 @@ normA = X - min(X(:));
 normA = normA ./ max(normA(:)); % *
 X = normA';
 
-[coeff,score,latent,tsquared,explained,mu] = pca(X,'VariableWeights','variance');
+[coeff,score,latent,tsquared,explained,mu] = pca(X,'VariableWeights','variance','Coeff0');
 
+coefforth = inv(diag(std(X)))* coeff;
 Xcentered = score*coeff';
-
+tsqreduced = mahal(score,score);
+tsqdiscarded = tsquared - tsqreduced;
+asd = diag(sqrt(explained))*coeff;
 %names = {'A0' 'A1' 'A2' 'A3' 'A4' 'A5' 'A6' 'A7' 'A8' 'A9'};
 % h = biplot(coeff(:,1:3),'scores',score(:,1 :3),'varlabels',names);
 

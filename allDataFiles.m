@@ -5,7 +5,7 @@ close
 clc
 
 % import data
-dir_FS = 'C:\Users\disam\OneDrive - Universidad Politécnica de Madrid\ExoFlex\Publications\Access\Tests\dataAcquired\test2\AllMatched';
+dir_FS = '/Users/aldo/Documents/OneDrive - Universidad Politécnica de Madrid/ExoFlex/Publications/Access/Tests/dataAcquired/test2/AllMatched';
 dinfoFS = dir(fullfile(dir_FS, '*.mat'));
 Tt = table;
 for K = 1 : length(dinfoFS)
